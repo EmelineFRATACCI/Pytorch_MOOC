@@ -4,8 +4,8 @@ np.random.seed(42)
 
 def stepFunction(t):
     if t >= 0:
-        return 1    # y-hat = 1, le point est dans la zone pos
-    return 0        # y-hat = 0, le point est dans la zone nég
+        return 1    # y-hat = 1, data point is in the positive zone
+    return 0        # y-hat = 0, data point is in the negative zone
 
 def prediction(X, W, b):
     return stepFunction((np.matmul(X,W)+b)[0])  
@@ -17,15 +17,16 @@ def prediction(X, W, b):
 # and return W and b.
 def perceptronStep(X, y, W, b, learn_rate = 0.01):
     # Fill in code
-    for i in range(len(X)):
-        y_hat= prediction(X[i], W, b)
-        if y[i]- y_hat == 1: #label pos(1) dans zone neg(0)
+    for i in range(len(X)):     #Going through every points in data.csv given in the exercise
+        y_hat= prediction(X[i], W, b)   #predict for each point in which zone we should place it
+        #We are only interested in checking misclassified points to be able to correct them
+        if y[i]- y_hat == 1: #Misclassified positive points in negative zone. ( label positive(1) is in negative zone(0) ==> 1-0 = 0 )
             for j in range(len(W)):
-                W[j] += (X[i][j]*learn_rate)
-            b += learn_rate
-        if y[i] - y_hat == -1: #label neg(0) dans zone positive(1)
+                W[j] += (X[i][j]*learn_rate) #Fix each weight of for the point X[i][j]
+            b += learn_rate #There's only 1 bias for each point X[i][j] so it is out of for j loop
+        if y[i] - y_hat == -1: #Misclassified negative points in positive zone. ( label negative(0) is in positive zone(1) ==> 0-1 = -1)
             for j in range(len(W)):
-                W[j] -= (X[i][j]*learn_rate)
+                W[j] -= (X[i][j]*learn_rate) 
             b -= learn_rate
     return W, b
     
